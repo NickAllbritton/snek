@@ -26,10 +26,73 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
+	config("config.txt"),
 	brd( gfx ),
 	rng( std::random_device()() ),
 	snek( {2,2} )
 {
+	std::string str_config = "";
+	// find length of file
+	config.seekg(0, std::ios::end);
+	const int length = config.tellg();
+	//return to beginning of file
+	config.seekg(0, std::ios::beg);
+	// read file into string
+	for (char c = config.get(); config.good(); c = config.get()) str_config.push_back(c);
+	config.close();
+	const int iBrdSize = str_config.find("[Board Size]");
+	const int iTileSize = str_config.find("[Tile Size]");
+	const int iSpeedupRate = str_config.find("[Speedup Rate]");
+	const int iPoisonAmount = str_config.find("[Poison Amount]");
+	const int iGoalAmount = str_config.find("[Goal Amount]");
+	//check if config for board size exists and set it
+	if (iBrdSize != std::string::npos)
+	{
+		// find values
+		// get substring of configuration from brd size to end of configuration
+		std::string s = str_config.substr(iBrdSize, str_config.size() - iBrdSize);
+		const int iValue = findValuePos(s);
+	}
+	else
+	{
+
+	}
+	//check if config for tile size exists and set it
+	if (iTileSize != std::string::npos)
+	{
+
+	}
+	else
+	{
+
+	}
+	//check if config for speedup rate exists and set it
+	if (iSpeedupRate != std::string::npos)
+	{
+
+	}
+	else
+	{
+
+	}
+	//check if config for poison amount exists and set it
+	if (iPoisonAmount != std::string::npos)
+	{
+
+	}
+	else
+	{
+
+	}
+	//check if config for goal amount exists and set it
+	if (iGoalAmount != std::string::npos)
+	{
+
+	}
+	else
+	{
+
+	}
 	for( int i = 0; i < nPoison; i++ )
 	{
 		brd.SpawnContents( rng,snek,Board::CellContents::Poison );
@@ -143,4 +206,15 @@ void Game::ComposeFrame()
 	{
 		SpriteCodex::DrawTitle( 290,225,gfx );
 	}
+}
+
+const int Game::findValuePos(std::string& s)
+{
+	for(int i = 0; i < 10; i++)
+	{
+		int ipos = s.find(std::to_string(i));
+		if (ipos = std::string::npos) continue;
+		else return ipos;
+	}
+	return -1;
 }

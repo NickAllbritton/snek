@@ -1,0 +1,9 @@
+[Tile Size]
+
+[Board Size]
+
+[Speedup Rate]
+
+[Poison Amount]
+
+[Goal Amount]

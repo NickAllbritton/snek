@@ -28,6 +28,7 @@
 #include <random>
 #include "SoundEffect.h"
 #include "FrameTimer.h"
+#include <fstream>
 
 class Game
 {
@@ -42,6 +43,7 @@ private:
 	/********************************/
 	/*  User Functions              */
 	/********************************/
+	const int findValuePos(std::string& s);
 private:
 	MainWindow& wnd;
 	Graphics gfx;
@@ -50,6 +52,7 @@ private:
 	Board brd;
 	Snake snek;
 	Location delta_loc = {1,0};
+	std::ifstream config;
 	std::mt19937 rng;
 	FrameTimer ft;
 	SoundEffect sfxEat = SoundEffect( { L"Sounds\\Eat.wav" } );
