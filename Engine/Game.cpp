@@ -68,50 +68,36 @@ Game::Game( MainWindow& wnd )
 					// if there is no newline after the second value assume the file ends
 					// cuz that's how this needs to be written and i'm lazy
 					(s2.find("\n") == std::string::npos) ? s2.size() - 1 : s2.find("\n")));
-				brd = Board(brdWidth, brdHeight, gfx);
+				brd = Board(brd.GetTileDimension(), brdWidth, brdHeight, gfx);
 			}
 		}
 	}
-	else
+	if (iTileSize != std::string::npos) //check if config for tile size exists and set it
+	{
+		// find values
+		// get substring of configuration from brd size to end of configuration
+		std::string s = str_config.substr(iTileSize, str_config.size() - iTileSize);
+		int nextSettingPos = findNextSettingPos(s);
+		const int iValue = findValuePos(s);
+		if (nextSettingPos != -1 && iValue != -1 && iValue < nextSettingPos)
+		{
+			int dimension = std::stoi(s.substr(iValue, s.find(" ")));
+			brd = Board(dimension, brd.GetGridWidth(), brd.GetGridHeight(), gfx);
+		}
+	}
+	if (iSpeedupRate != std::string::npos) //check if config for speedup rate exists and set it
 	{
 
 	}
-	//check if config for tile size exists and set it
-	if (iTileSize != std::string::npos)
+	if (iPoisonAmount != std::string::npos) //check if config for poison amount exists and set it
+	{
+
+	} 
+	if (iGoalAmount != std::string::npos) //check if config for goal amount exists and set it
 	{
 
 	}
-	else
-	{
 
-	}
-	//check if config for speedup rate exists and set it
-	if (iSpeedupRate != std::string::npos)
-	{
-
-	}
-	else
-	{
-
-	}
-	//check if config for poison amount exists and set it
-	if (iPoisonAmount != std::string::npos)
-	{
-
-	}
-	else
-	{
-
-	}
-	//check if config for goal amount exists and set it
-	if (iGoalAmount != std::string::npos)
-	{
-
-	}
-	else
-	{
-
-	}
 	for( int i = 0; i < nPoison; i++ )
 	{
 		brd.SpawnContents( rng,snek,Board::CellContents::Poison );

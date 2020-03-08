@@ -18,9 +18,10 @@ Board::Board( Graphics& gfx )
 	}
 }
 
-Board::Board(int width, int height, Graphics& gfx)
+Board::Board(int dimension, int width, int height, Graphics& gfx)
 	:
-	gfx(gfx)
+	gfx(gfx),
+	dimension(dimension)
 {
 	maxwidth = Graphics::ScreenWidth / (dimension + cellPadding);
 	maxheight = Graphics::ScreenHeight / (dimension + cellPadding);
@@ -43,6 +44,8 @@ const Board& Board::operator=(const Board& right)
 	height = right.height;
 	contents = right.contents;
 	dimension = right.dimension;
+	maxheight = right.maxheight;
+	maxwidth = right.maxwidth;
 	// height and width must be recalculated since brd is initialized with default values for width and height
 	x = (Graphics::ScreenWidth / 2) - (width * dimension / 2);
 	y = (Graphics::ScreenHeight / 2) - (height * dimension / 2);
@@ -70,6 +73,11 @@ int Board::GetGridWidth() const
 int Board::GetGridHeight() const
 {
 	return height;
+}
+
+int Board::GetTileDimension() const
+{
+	return dimension;
 }
 
 bool Board::IsInsideBoard( const Location & loc ) const

@@ -16,11 +16,12 @@ public:
 	};
 public:
 	Board( Graphics& gfx );
-	Board(int width, int height, Graphics& gfx);
+	Board(int dimension, int width, int height, Graphics& gfx);
 	const Board& operator=(const Board& right);
 	void DrawCell( const Location& loc,Color c );
 	int GetGridWidth() const;
 	int GetGridHeight() const;
+	int GetTileDimension() const;
 	bool IsInsideBoard( const Location& loc ) const;
 	CellContents GetContents( const Location& loc ) const;
 	void ConsumeContents( const Location& loc );
