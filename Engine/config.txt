@@ -5,7 +5,10 @@
 50 50
 
 [Speedup Rate]
+1.1
 
 [Poison Amount]
+200
 
 [Goal Amount]
+50

@@ -61,7 +61,7 @@ Game::Game( MainWindow& wnd )
 			s2 = s2.substr(begStrAfterValue1, s.size() - begStrAfterValue1);
 			const int iValue2 = findValuePos(s2);
 			const int nextSettingPos = findNextSettingPos(s2);
-			if (nextSettingPos != -1 && iValue2 != -1 && iValue2 < nextSettingPos)
+			if ((nextSettingPos == -1 && iValue2 != -1) || (iValue2 < nextSettingPos && nextSettingPos != -1))
 			{
 				int brdWidth = std::stoi(s.substr(iValue, s.find(" ")));
 				int brdHeight = std::stoi(s2.substr(iValue2, 
@@ -79,7 +79,7 @@ Game::Game( MainWindow& wnd )
 		std::string s = str_config.substr(iTileSize, str_config.size() - iTileSize);
 		int nextSettingPos = findNextSettingPos(s);
 		const int iValue = findValuePos(s);
-		if (nextSettingPos != -1 && iValue != -1 && iValue < nextSettingPos)
+		if ((nextSettingPos == -1 && iValue != -1) || (iValue < nextSettingPos && nextSettingPos != -1))
 		{
 			int dimension = std::stoi(s.substr(iValue, s.find(" ")));
 			brd = Board(dimension, brd.GetGridWidth(), brd.GetGridHeight(), gfx);
@@ -87,15 +87,40 @@ Game::Game( MainWindow& wnd )
 	}
 	if (iSpeedupRate != std::string::npos) //check if config for speedup rate exists and set it
 	{
-
+		// find values
+		// get substring of configuration from brd size to end of configuration
+		std::string s = str_config.substr(iSpeedupRate, str_config.size() - iSpeedupRate);
+		int nextSettingPos = findNextSettingPos(s);
+		const int iValue = findValuePos(s);
+		if ((nextSettingPos == -1 && iValue != -1) || (iValue < nextSettingPos && nextSettingPos != -1))
+		{
+			snekSpeedupFactor = 1/std::stof(s.substr(iValue,
+				(s.find(" ") != std::string::npos) ? s.find(" ") : s.find("\n")));
+		}
 	}
 	if (iPoisonAmount != std::string::npos) //check if config for poison amount exists and set it
 	{
-
+		// find values
+		// get substring of configuration from brd size to end of configuration
+		std::string s = str_config.substr(iPoisonAmount, str_config.size() - iPoisonAmount);
+		int nextSettingPos = findNextSettingPos(s);
+		const int iValue = findValuePos(s);
+		if ((nextSettingPos == -1 && iValue != -1) || (iValue < nextSettingPos && nextSettingPos != -1))
+		{
+			nPoison = std::stoi(s.substr(iValue, (s.find(" ") != std::string::npos) ? s.find(" ") : s.find("\n")));
+		}
 	} 
 	if (iGoalAmount != std::string::npos) //check if config for goal amount exists and set it
 	{
-
+		// find values
+		// get substring of configuration from brd size to end of configuration
+		std::string s = str_config.substr(iGoalAmount, str_config.size() - iGoalAmount);
+		int nextSettingPos = findNextSettingPos(s);
+		const int iValue = findValuePos(s);
+		if ((nextSettingPos == -1 && iValue != -1) || (iValue < nextSettingPos && nextSettingPos != -1))
+		{
+			nFood = std::stoi(s.substr(iValue, (s.find(" ") != std::string::npos) ? s.find(" ") : s.find("\n")));
+		}
 	}
 
 	for( int i = 0; i < nPoison; i++ )
