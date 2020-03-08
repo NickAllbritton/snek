@@ -52,6 +52,25 @@ Game::Game( MainWindow& wnd )
 		// get substring of configuration from brd size to end of configuration
 		std::string s = str_config.substr(iBrdSize, str_config.size() - iBrdSize);
 		const int iValue = findValuePos(s);
+		if (iValue != -1)
+		{
+			// get substring of configuration from the value1 position to end of configuration
+			std::string s2 = s.substr(iValue, s.size() - iValue);
+			int begStrAfterValue1 = s2.find(" ");
+			// get substring of configuration from space after value1 to end of config
+			s2 = s2.substr(begStrAfterValue1, s.size() - begStrAfterValue1);
+			const int iValue2 = findValuePos(s2);
+			const int nextSettingPos = findNextSettingPos(s2);
+			if (nextSettingPos != -1 && iValue2 != -1 && iValue2 < nextSettingPos)
+			{
+				int brdWidth = std::stoi(s.substr(iValue, s.find(" ")));
+				int brdHeight = std::stoi(s2.substr(iValue2, 
+					// if there is no newline after the second value assume the file ends
+					// cuz that's how this needs to be written and i'm lazy
+					(s2.find("\n") == std::string::npos) ? s2.size() - 1 : s2.find("\n")));
+				brd = Board(brdWidth, brdHeight, gfx);
+			}
+		}
 	}
 	else
 	{
@@ -210,11 +229,62 @@ void Game::ComposeFrame()
 
 const int Game::findValuePos(std::string& s)
 {
+	int lowestFoundDigitPos = -1;
+	int nextSettingPos = findNextSettingPos(s);
 	for(int i = 0; i < 10; i++)
 	{
 		int ipos = s.find(std::to_string(i));
-		if (ipos = std::string::npos) continue;
-		else return ipos;
+		// if the digit is found after this setting 
+		// and if this is not the last setting listed
+		// search for the next digit instead
+		if (ipos > nextSettingPos && nextSettingPos != -1) continue;
+		else
+		{
+			if (ipos != std::string::npos)
+			{
+				if (lowestFoundDigitPos == -1) lowestFoundDigitPos = ipos;
+				else
+				// if the digit found is positioned before the lowest digit position found so far
+				// it replaces the lowest digit position found
+				lowestFoundDigitPos = (ipos < lowestFoundDigitPos && lowestFoundDigitPos != -1) ? ipos : lowestFoundDigitPos;
+			}
+			else
+			{
+				continue;
+			}
+		}
 	}
-	return -1;
+	return lowestFoundDigitPos;
+}
+
+int Game::findNextSettingPos(std::string& s)
+{
+	int iBrdSize = s.find("[Board Size]");
+	int iTileSize;
+	int iSpeedupRate;
+	int iPoisonAmount;
+	int iGoalAmount;
+	// check each of the setting headers one at a time and return the pos when the first is found
+	if (iBrdSize != std::string::npos && iBrdSize != 0) return iBrdSize;
+	else
+	{
+		iTileSize = s.find("[Tile Size]");
+		if (iTileSize != std::string::npos && iTileSize != 0) return iTileSize;
+		else
+		{
+			iSpeedupRate = s.find("[Speedup Rate]");
+			if (iSpeedupRate != std::string::npos && iSpeedupRate != 0) return iSpeedupRate;
+			else
+			{
+				iPoisonAmount = s.find("[Poison Amount]");
+				if (iPoisonAmount != std::string::npos && iPoisonAmount != 0) return iPoisonAmount;
+				else
+				{
+					iGoalAmount = s.find("[Goal Amount]");
+					if (iGoalAmount != std::string::npos && iGoalAmount != 0) return iGoalAmount;
+					else return -1;
+				}
+			}
+		}
+	}
 }

@@ -44,6 +44,7 @@ private:
 	/*  User Functions              */
 	/********************************/
 	const int findValuePos(std::string& s);
+	int findNextSettingPos(std::string& s);
 private:
 	MainWindow& wnd;
 	Graphics gfx;

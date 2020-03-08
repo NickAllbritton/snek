@@ -5,7 +5,49 @@
 Board::Board( Graphics& gfx )
 	:
 	gfx( gfx )
-{}
+{
+	maxwidth = Graphics::ScreenWidth / (dimension + cellPadding);
+	maxheight = Graphics::ScreenHeight / (dimension + cellPadding);
+	// initialize all the cells as empty
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			contents.push_back(Board::CellContents::Empty);
+		}
+	}
+}
+
+Board::Board(int width, int height, Graphics& gfx)
+	:
+	gfx(gfx)
+{
+	maxwidth = Graphics::ScreenWidth / (dimension + cellPadding);
+	maxheight = Graphics::ScreenHeight / (dimension + cellPadding);
+	// ensure that the width and height don't exceed the maximum
+	this->width = (width <= maxwidth) ? width : maxwidth;
+	this->height = (height <= maxheight) ? height : maxheight;
+	// initialize all the cells as empty
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			contents.push_back(Board::CellContents::Empty);
+		}
+	}
+}
+
+const Board& Board::operator=(const Board& right)
+{
+	width = right.width;
+	height = right.height;
+	contents = right.contents;
+	dimension = right.dimension;
+	// height and width must be recalculated since brd is initialized with default values for width and height
+	x = (Graphics::ScreenWidth / 2) - (width * dimension / 2);
+	y = (Graphics::ScreenHeight / 2) - (height * dimension / 2);
+	return *this;
+}
 
 void Board::DrawCell( const Location & loc,Color c )
 {
@@ -38,7 +80,8 @@ bool Board::IsInsideBoard( const Location & loc ) const
 
 Board::CellContents Board::GetContents( const Location& loc ) const
 {
-	return contents[loc.y * width + loc.x];
+	// if the snake tries to eat a tile outside the board it dies
+	return (IsInsideBoard(loc)) ? contents[loc.y * width + loc.x] : Board::CellContents::Poison;
 }
 
 void Board::ConsumeContents( const Location& loc )
